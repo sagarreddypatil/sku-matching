@@ -1,5 +1,6 @@
 import json
 from openai import OpenAI
+from openai.types.responses import ResponseUsage
 from code_interpreter import CodeInterpreter
 
 client = OpenAI()
@@ -79,8 +80,11 @@ kwargs = {
 
 end = False
 out = None
+usages = []
+
 while not end:
     response = client.responses.create(**kwargs, input=inputs)
+    usages.append(response.usage)
     for output in response.output:
         inputs.append(output)
 
@@ -106,5 +110,39 @@ while not end:
             out = json.loads(output.content[0].text)
             end = True
             break
+
+
+def sum_usages(usages: list[ResponseUsage]) -> dict[str, int]:
+    total_input = sum(u.input_tokens for u in usages)
+    total_cached = sum(u.input_tokens_details.cached_tokens for u in usages)
+    total_output = sum(u.output_tokens for u in usages)
+    total_reasoning = sum(u.output_tokens_details.reasoning_tokens for u in usages)
+    total_tokens = sum(u.total_tokens for u in usages)
+
+    return {
+        "input_tokens": total_input,
+        "cached_tokens": total_cached,
+        "output_tokens": total_output,
+        "reasoning_tokens": total_reasoning,
+        "total_tokens": total_tokens,
+    }
+
+
+def estimate_pricing(usage: dict[str, int]) -> float:
+    non_cached_input = usage["input_tokens"] - usage["cached_tokens"]
+    cached_input = usage["cached_tokens"]
+    output = usage["output_tokens"]
+
+    non_cached_input = 1.1 * non_cached_input / 1_000_000
+    cached_input = 0.275 * cached_input / 1_000_000
+    output = 4.4 * output / 1_000_000
+
+    return non_cached_input + cached_input + output
+
+
+usage = sum_usages(usages)
+print(json.dumps(usage, indent=2))
+
+print(f"Estimated cost: ${estimate_pricing(usage):.4f}")
 
 print("final_output", out)
