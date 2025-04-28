@@ -9,3 +9,6 @@ wheels/
 # Virtual environments
 .venv
 data/
+
+email_input.txt
+ground_truth.txt
