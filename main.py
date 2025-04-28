@@ -1,3 +1,4 @@
+import time
 import json
 from openai import OpenAI
 from openai.types.responses import ResponseUsage
@@ -82,6 +83,8 @@ end = False
 out = None
 usages = []
 
+start = time.time()
+
 while not end:
     response = client.responses.create(**kwargs, input=inputs)
     usages.append(response.usage)
@@ -110,6 +113,9 @@ while not end:
             out = json.loads(output.content[0].text)
             end = True
             break
+
+
+took = time.time() - start
 
 
 def sum_usages(usages: list[ResponseUsage]) -> dict[str, int]:
@@ -146,3 +152,4 @@ print(json.dumps(usage, indent=2))
 print(f"Estimated cost: ${estimate_pricing(usage):.4f}")
 
 print("final_output", out)
+print(f"took {took:.2f} seconds")
