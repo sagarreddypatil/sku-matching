@@ -73,7 +73,7 @@ tools = [
 
 kwargs = {
     "model": "o4-mini",
-    "reasoning": {"effort": "high", "summary": "auto"},
+    "reasoning": {"effort": "medium", "summary": "auto"},
     "text": output_schema,
     "tools": tools,
     "store": True,

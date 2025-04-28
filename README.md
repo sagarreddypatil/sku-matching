@@ -1,4 +1,4 @@
-# SKU Matching POC with OpenAI o4-mini-high
+# SKU Matching POC with OpenAI o4-mini
 
 ## Dependencies
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
@@ -30,7 +30,7 @@ Then, run
 uv run main.py
 ```
 
-To solve the problem in the txt files with OpenAI's o4-mini-high model.
+To solve the problem in the txt files with OpenAI's o4-mini model.
 
 **Before running `main.py`**, you need to add your OpenAI API key to an environment variable.
 ```sh
