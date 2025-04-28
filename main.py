@@ -4,7 +4,11 @@ from code_interpreter import CodeInterpreter
 
 client = OpenAI()
 interp = CodeInterpreter()
-interp.run_code(open("ai_function_stub.py", "r").read())
+interp_stub = """
+import pandas as pd
+df = pd.read_csv("data/product_df.csv")
+"""
+interp.run_code(interp_stub)
 
 system_prompt = open("system_prompt.txt", "r").read()
 email_input = open("email_input.txt", "r").read()
